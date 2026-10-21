@@ -26,7 +26,7 @@ export default function PromptInput({ busy, onSubmit }: Props) {
         placeholder={EXAMPLES[0]} />
       <div className="row">
         <button className="go" type="submit" disabled={busy}>{busy ? 'finding charms…' : 'make bracelet'}</button>
-        <label htmlFor="n" className="small">Charms</label>
+        <label htmlFor="n" className="small">charms</label>
         <select id="n" value={count} onChange={(e) => setCount(+e.target.value)}>
           {[3, 4, 5, 6, 7].map((n) => <option key={n}>{n}</option>)}
         </select>

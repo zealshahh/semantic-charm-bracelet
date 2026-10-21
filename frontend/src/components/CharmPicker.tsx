@@ -4,7 +4,7 @@ import { goldCharmUrl } from './CharmRenderer'
 
 type CatalogCharm = Pick<Charm, 'id' | 'name' | 'asset_url'> & { description: string }
 
-export default function CharmPicker({ selected, onAdd }: { selected: Charm[]; onAdd: (charm: Charm) => void }) {
+export default function CharmPicker({ selected, onToggle }: { selected: Charm[]; onToggle: (charm: Charm) => void }) {
   const [catalog, setCatalog] = useState<CatalogCharm[]>([])
   const [error, setError] = useState(false)
   const [query, setQuery] = useState('')
@@ -21,18 +21,19 @@ export default function CharmPicker({ selected, onAdd }: { selected: Charm[]; on
   return (
     <details className="charm-picker">
       <summary>add a little something +</summary>
-      <p>pick a charm, then drag it wherever you like. up to 10 on your bracelet.</p>
-      <input type="search" aria-label="Find a charm" placeholder="a butterfly? a cherry?" value={query} onChange={e => setQuery(e.target.value)} />
+      <p>up to 10 on your bracelet.</p>
+      <input type="search" aria-label="find a charm" placeholder="a butterfly? a cherry?" value={query} onChange={e => setQuery(e.target.value)} />
       {error && <p role="alert">couldn’t load the charms. refresh to try again.</p>}
       <div className="charm-tray">
         {catalog.filter(charm => `${charm.name} ${charm.description}`.toLowerCase().includes(query.toLowerCase())).map(charm => {
           const added = selected.some(item => item.id === charm.id)
-          return <button type="button" key={charm.id} disabled={added || selected.length >= 10}
-            aria-label={`${added ? 'Already added' : 'Add'} ${charm.name}`}
-            onClick={() => onAdd({ ...charm, concept: 'picked by you', match_score: 1, position: selected.length,
+          return <button type="button" key={charm.id} disabled={!added && selected.length >= 10}
+            aria-pressed={added}
+            aria-label={`${added ? 'remove' : 'add'} ${charm.name.toLowerCase()}`}
+            onClick={() => onToggle({ ...charm, concept: 'picked by you', match_score: 1, position: selected.length,
               physics: { density: 0.001, friction: 0.3, restitution: 0.2 } })}>
             <img alt="" src={goldCharmUrl(charm.asset_url)} loading="lazy" />
-            <span>{charm.name}</span><small>{added ? 'on your bracelet' : '+ add'}</small>
+            <span>{charm.name.toLowerCase()}</span><small>{added ? '− remove' : '+ add'}</small>
           </button>
         })}
       </div>

@@ -23,8 +23,82 @@ function loadPhysics(name) {
 const { createChain } = loadPhysics('createChain')
 const { assignCharmSlots } = loadPhysics('assignCharmSlots')
 const { createCharmItem, stepCharm } = loadPhysics('attachCharm')
-const { startCharmDrag, finishCharmDrag, nearestCharmLink } = loadPhysics('attachCharm')
-const { addCharms } = loadPhysics('addCharms')
+const { startCharmDrag, updateCharmDrag, finishCharmDrag, nearestCharmLink } = loadPhysics('attachCharm')
+
+test('sliding stays clipped until pulled away, then can be clipped back on', () => {
+  const engine = Matter.Engine.create(), chain = createChain(engine.world, 942, 424)
+  const item = createCharmItem({ physics: { density: .001, friction: .3, restitution: .2 } }, null, chain.links[8], 88, 0, false)
+  Matter.Composite.add(engine.world, item.body)
+  stepCharm(item, 0, engine.world, 88, true)
+  const attachment = item.attachment
+  startCharmDrag(item, engine.world, item.body.position, true)
+  assert.equal(item.attachment, attachment, 'picking up does not unclip the charm')
+  const target = chain.links[15].position
+  for (let i = 0; i < 60; i++) updateCharmDrag(item, engine.world, chain.links, [item], { x: target.x, y: target.y + 41 }, 88)
+  assert.equal(item.attachment, attachment)
+  assert.equal(item.link, chain.links[15])
+  assert.ok(Math.hypot(item.attachment.pointA.x - target.x, item.attachment.pointA.y - target.y) < 6)
+  updateCharmDrag(item, engine.world, chain.links, [item], { x: target.x, y: target.y + 240 }, 88)
+  assert.equal(item.attachment, null, 'a deliberate outward pull unclips it')
+  assert.equal(item.grip.pointA.y, target.y + 240)
+  updateCharmDrag(item, engine.world, chain.links, [item], { x: target.x, y: target.y + 41 }, 88)
+  assert.ok(item.attachment, 'bringing it near the chain clips it back on')
+  finishCharmDrag(item, item.link, [item], engine.world, 88)
+  stepCharm(item, 10000, engine.world, 88, true)
+  assert.equal(item.state, 'on')
+  assert.equal(item.grip, null)
+  assert.equal(Matter.Composite.allConstraints(engine.world).length, 27)
+})
+const { addCharms, removeCharms } = loadPhysics('addCharms')
+
+test('sliding anchors move continuously at a bounded speed and release without teleporting', () => {
+  const engine = Matter.Engine.create(), chain = createChain(engine.world, 942, 424)
+  const item = createCharmItem({ physics: { density: .001, friction: .3, restitution: .2 } }, null, chain.links[8], 88, 0, false)
+  Matter.Composite.add(engine.world, item.body)
+  stepCharm(item, 0, engine.world, 88, true)
+  startCharmDrag(item, engine.world, item.body.position, true)
+  const desired = { x: chain.links[18].position.x, y: chain.links[18].position.y + 41 }
+  for (let i = 0; i < 60; i++) {
+    const previous = { ...item.attachment.pointA }
+    updateCharmDrag(item, engine.world, chain.links, [item], desired, 88, 1000 / 60)
+    const anchor = item.attachment.pointA
+    assert.ok(Math.hypot(anchor.x - previous.x, anchor.y - previous.y) <= 15.0001, 'each physics tick limits anchor movement')
+  }
+  const previous = { ...item.attachment.pointA }
+  updateCharmDrag(item, engine.world, chain.links, [item], desired, 88, 0)
+  assert.deepEqual(item.attachment.pointA, previous, 'pointer events do not advance animation between physics ticks')
+  const position = { ...item.body.position }
+  finishCharmDrag(item, item.link, [item], engine.world, 88)
+  assert.deepEqual(item.body.position, position)
+  assert.equal(item.state, 'settle')
+  assert.equal(item.slideAnchor, null)
+})
+
+test('toggling charms removes bodies and constraints, frees slots, and allows adding again', () => {
+  const engine = Matter.Engine.create(), chain = createChain(engine.world, 942, 424)
+  const collection = { world: engine.world, links: chain.links, items: [], size: 88, initialized: false }
+  const charms = ['heart', 'book', 'cloud'].map(id => ({ id, physics: { density: .001, friction: .3, restitution: .2 } }))
+  const slots = new Map()
+  addCharms(collection, charms, new Map(), slots, 0)
+  collection.items.forEach(item => stepCharm(item, 5000, engine.world, 88, true))
+  const survivor = collection.items[0]
+  startCharmDrag(collection.items[1], engine.world)
+  removeCharms(collection, [charms[0]], slots)
+  assert.equal(collection.items.length, 1)
+  assert.equal(collection.items[0], survivor)
+  assert.equal(slots.size, 1)
+  assert.equal(Matter.Composite.allBodies(engine.world).length, chain.links.length + 1)
+  assert.equal(Matter.Composite.allConstraints(engine.world).length, 27)
+  removeCharms(collection, [], slots)
+  assert.equal(Matter.Composite.allBodies(engine.world).length, chain.links.length)
+  assert.equal(Matter.Composite.allConstraints(engine.world).length, 26)
+  assert.equal(slots.size, 0)
+  addCharms(collection, [charms[1]], new Map(), slots, 6000)
+  assert.equal(collection.items[0].charm.id, 'book')
+  removeCharms(collection, [], slots)
+  assert.equal(collection.items.length, 0, 'a charm can also be removed while waiting to drop')
+  assert.equal(Matter.Composite.allConstraints(engine.world).length, 26)
+})
 
 test('adding a charm preserves existing bodies, momentum, chain constraints and an active grip', () => {
   const engine = Matter.Engine.create()

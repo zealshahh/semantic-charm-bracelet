@@ -22,14 +22,12 @@ button{font:inherit;cursor:pointer}
 #status.err{color:var(--danger)}
 #stage{position:relative;height:clamp(340px,60vh,540px);margin-top:8px;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse at 45% 25%,#fffcf3 0%,#f2e8d4 55%,#dfcfaf 100%);border:1px solid #dac9a8;box-shadow:inset 0 0 65px #a48a5920,0 16px 45px #7254280d}
 canvas{display:block;width:100%;height:100%;touch-action:none}
-#hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted);pointer-events:none}
 #legend{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 #legend li{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--field)}
 #legend img{width:52px;height:52px;object-fit:contain;flex:none;filter:drop-shadow(0 3px 2px #64431b26)}
 #legend b{display:block;font-weight:700;font-size:21px}
 #legend span{color:var(--muted);font-size:18px}
 
-.drag-hint{position:absolute;bottom:12px;left:16px;right:16px;margin:0;text-align:center;font-size:18px;color:#806a46;pointer-events:none}
 .charm-picker{margin:24px 0;border-top:1px solid var(--line);padding-top:16px}
 .charm-picker summary{cursor:pointer;font:500 20px/1.4 'DynaPuff',cursive;color:var(--accent)}
 .charm-picker p{margin:12px 0;color:var(--muted)}
@@ -42,3 +40,5 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .charm-tray span{font-size:19px;line-height:1.15}
 .charm-tray small{font-size:16px;color:var(--accent)}
 @media(prefers-reduced-motion:reduce){.charm-tray button{transition:none}.charm-tray button:hover:not(:disabled){transform:none}}
+
+.charm-tray button[aria-pressed="true"]{border-color:var(--accent);background:#f8edda}

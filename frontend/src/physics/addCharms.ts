@@ -11,6 +11,21 @@ export interface CharmCollection {
   initialized: boolean
 }
 
+/** Remove bodies and both kinds of constraints without restarting the world. */
+export function removeCharms(collection: CharmCollection, charms: Charm[], savedSlots: Map<string, number>) {
+  const keep = new Set(charms.map(charm => charm.id))
+  for (let i = collection.items.length - 1; i >= 0; i--) {
+    const item = collection.items[i]
+    if (keep.has(item.charm.id)) continue
+    if (item.attachment) Matter.Composite.remove(collection.world, item.attachment)
+    if (item.grip) Matter.Composite.remove(collection.world, item.grip)
+    Matter.Composite.remove(collection.world, item.body)
+    item.attachment = item.grip = null
+    savedSlots.delete(item.charm.id)
+    collection.items.splice(i, 1)
+  }
+}
+
 /** Append new bodies without touching existing positions, velocities or grips. */
 export function addCharms(
   collection: CharmCollection,

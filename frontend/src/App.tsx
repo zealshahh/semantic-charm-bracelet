@@ -19,9 +19,7 @@ export default function App() {
     try {
       const b = await generateBracelet(memory, count, ctl.signal)
       setBracelet(b)
-      setStatus(b.charms.length < count
-        ? `${b.charms.length} charms. not enough details for more charms :( )`
-        : `${b.charms.length} charms hung. drag charms along the chain to rearrange them.`)
+      setStatus('')
     } catch (e) {
       if ((e as Error).name === 'AbortError') return
       setBracelet(null); setIsError(true); setStatus((e as Error).message)
@@ -34,22 +32,29 @@ export default function App() {
     <main>
       <h1>semantic charm bracelet</h1>
       <p className="lede">write a memory and create a charm bracelet for it ❤️ </p>
+      {isError && <p className="err" role="alert">{status.toLowerCase()}</p>}
       <PromptInput busy={busy} onSubmit={onSubmit} />
-      <p id="status" className={isError ? 'err' : ''} role="status" aria-live="polite">{status}</p>
-      <BraceletCanvas charms={bracelet?.charms ?? null} braceletId={bracelet?.bracelet_id} />
-      {bracelet && <CharmPicker selected={bracelet.charms} onAdd={charm => {
-        setBracelet(current => current && !current.charms.some(item => item.id === charm.id) && current.charms.length < 10
-          ? { ...current, charms: [...current.charms, charm] } : current)
-        setStatus('a new little keepsake. pick it up and find its spot.')
+      <p id="status">a new little keepsake.</p>
+      <BraceletCanvas charms={bracelet?.charms ?? null} braceletId={bracelet?.bracelet_id}
+        onRemove={id => setBracelet(current => current ? { ...current, charms: current.charms.filter(charm => charm.id !== id) } : current)} />
+      {bracelet && <CharmPicker selected={bracelet.charms} onToggle={charm => {
+        setBracelet(current => {
+          if (!current) return current
+          const added = current.charms.some(item => item.id === charm.id)
+          if (!added && current.charms.length >= 10) return current
+          return { ...current, charms: added
+            ? current.charms.filter(item => item.id !== charm.id)
+            : [...current.charms, charm] }
+        })
       }} />}
       {bracelet && (
         <>
-          <h2 className="theme">{bracelet.theme}</h2>
+          <h2 className="theme">{bracelet.theme.toLowerCase()}</h2>
           <ol id="legend">
             {bracelet.charms.map((c) => (
               <li key={c.id}>
                 <img alt="" src={goldCharmUrl(c.asset_url)} />
-                <div><b>{c.name}</b><span>for “{c.concept}”</span></div>
+                <div><b>{c.name.toLowerCase()}</b><span>for “{c.concept.toLowerCase()}”</span></div>
               </li>
             ))}
           </ol>
