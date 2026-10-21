@@ -1,0 +1,314 @@
+[
+  {
+    "id": "matcha",
+    "name": "Matcha cup",
+    "description": "A tiny matcha cup charm",
+    "semantic_description": "matcha, tea, green, drink, drinking, drinks, cafe, cafes, coffee, latte, sip, sipping, cup, mug, warm",
+    "category": "food",
+    "asset_url": "/assets/charms/matcha.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "book",
+    "name": "Book",
+    "description": "A tiny book charm",
+    "semantic_description": "book, books, library, libraries, reading, read, reads, study, studying, studies, novel, story, stories, quiet, school, homework",
+    "category": "objects",
+    "asset_url": "/assets/charms/book.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "cloud",
+    "name": "Rain cloud",
+    "description": "A tiny rain cloud charm",
+    "semantic_description": "rain, rainy, raining, rains, storm, stormy, cloud, clouds, drizzle, wet, weather, gloomy, umbrella, puddle, puddles, thunder",
+    "category": "nature",
+    "asset_url": "/assets/charms/cloud.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "heart",
+    "name": "Heart",
+    "description": "A tiny heart charm",
+    "semantic_description": "heart, love, loved, friend, friends, friendship, family, together, relationship, partner, kiss, care, affection, hug, hugs, sister, brother, mom, dad",
+    "category": "people",
+    "asset_url": "/assets/charms/heart.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "star",
+    "name": "Star",
+    "description": "A tiny star charm",
+    "semantic_description": "star, stars, stargazing, night, sky, wish, wishes, dream, dreams, magic, starry, constellation, galaxy",
+    "category": "nature",
+    "asset_url": "/assets/charms/star.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "sun",
+    "name": "Sun",
+    "description": "A tiny sun charm",
+    "semantic_description": "sun, sunny, sunshine, summer, bright, morning, sunrise, sunset, hot, warm, golden",
+    "category": "nature",
+    "asset_url": "/assets/charms/sun.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "moon",
+    "name": "Moon",
+    "description": "A tiny moon charm",
+    "semantic_description": "moon, moonlight, midnight, sleep, sleeping, late, evening, dark, bedtime, tonight, dusk",
+    "category": "nature",
+    "asset_url": "/assets/charms/moon.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "flower",
+    "name": "Flower",
+    "description": "A tiny flower charm",
+    "semantic_description": "flower, flowers, garden, gardens, spring, bloom, blossom, blossoms, nature, picnic, petals, meadow, bouquet",
+    "category": "nature",
+    "asset_url": "/assets/charms/flower.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "camera",
+    "name": "Camera",
+    "description": "A tiny camera charm",
+    "semantic_description": "camera, photo, photos, picture, pictures, memory, memories, photograph, snapshot, selfie",
+    "category": "objects",
+    "asset_url": "/assets/charms/camera.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "note",
+    "name": "Music note",
+    "description": "A tiny music note charm",
+    "semantic_description": "music, song, songs, concert, singing, sing, playlist, dance, dancing, dance, band, guitar, piano, karaoke, radio",
+    "category": "objects",
+    "asset_url": "/assets/charms/note.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "paw",
+    "name": "Paw print",
+    "description": "A tiny paw print charm",
+    "semantic_description": "dog, dogs, cat, cats, pet, pets, puppy, kitten, animal, animals, paw, walk, walks",
+    "category": "people",
+    "asset_url": "/assets/charms/paw.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "mountain",
+    "name": "Mountain",
+    "description": "A tiny mountain charm",
+    "semantic_description": "mountain, mountains, hike, hiking, hikes, trail, camp, camping, camped, tree, trees, forest, woods, outdoors, outside, adventure, trek",
+    "category": "nature",
+    "asset_url": "/assets/charms/mountain.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "wave",
+    "name": "Ocean wave",
+    "description": "A tiny ocean wave charm",
+    "semantic_description": "beach, ocean, sea, wave, waves, shell, sand, swim, swimming, vacation, coast, lake, river, surf, pool",
+    "category": "nature",
+    "asset_url": "/assets/charms/wave.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "plane",
+    "name": "Paper plane",
+    "description": "A tiny paper plane charm",
+    "semantic_description": "travel, traveling, trip, trips, flight, flights, airport, journey, abroad, plane, flying, fly, flew, road, roadtrip, passport",
+    "category": "objects",
+    "asset_url": "/assets/charms/plane.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "cake",
+    "name": "Cake",
+    "description": "A tiny cake charm",
+    "semantic_description": "birthday, birthdays, cake, cakes, party, parties, celebration, celebrate, dessert, sweet, candle, candles, bake, baking, baked, cookies",
+    "category": "food",
+    "asset_url": "/assets/charms/cake.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "snow",
+    "name": "Snowflake",
+    "description": "A tiny snowflake charm",
+    "semantic_description": "snow, snowing, snowy, fell, winter, cold, snowflake, snowflakes, frost, ice, christmas, holiday, freezing",
+    "category": "nature",
+    "asset_url": "/assets/charms/snow.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "home",
+    "name": "Cozy house",
+    "description": "A tiny cozy house charm",
+    "semantic_description": "home, house, family, cozy, fireplace, blanket, comfort, inside, indoors, couch, kitchen, warm, sleepover, apartment",
+    "category": "objects",
+    "asset_url": "/assets/charms/home.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "food",
+    "name": "Dinner plate",
+    "description": "A tiny dinner plate charm",
+    "semantic_description": "dinner, food, eat, eating, ate, meal, pizza, cooking, cook, cooked, lunch, restaurant, breakfast, brunch, snack, hungry",
+    "category": "food",
+    "asset_url": "/assets/charms/food.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "leaf",
+    "name": "Autumn leaf",
+    "description": "A tiny autumn leaf charm",
+    "semantic_description": "autumn, fall, leaves, leaf, pumpkin, october, crisp, harvest, orchard, cider",
+    "category": "nature",
+    "asset_url": "/assets/charms/leaf.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "smile",
+    "name": "Smile",
+    "description": "A tiny smile charm",
+    "semantic_description": "laugh, laughing, laughed, smile, smiling, happy, joy, fun, giggle, joyful, cheerful, silly, funny",
+    "category": "people",
+    "asset_url": "/assets/charms/smile.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "bike",
+    "name": "Bicycle",
+    "description": "A tiny bicycle charm",
+    "semantic_description": "bike, bikes, bicycle, ride, riding, rode, cycling, commute",
+    "category": "objects",
+    "asset_url": "/assets/charms/bike.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "candle",
+    "name": "Candle",
+    "description": "A tiny candle charm",
+    "semantic_description": "candle, candles, candlelight, quiet, calm, peaceful, silence, relax, relaxing, cozy, glow, lantern",
+    "category": "objects",
+    "asset_url": "/assets/charms/candle.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "coffee",
+    "name": "Coffee",
+    "description": "A tiny coffee charm",
+    "semantic_description": "coffee, espresso, latte, cappuccino, barista, morning, caffeine",
+    "category": "food",
+    "asset_url": "/assets/charms/coffee.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "gift",
+    "name": "Gift",
+    "description": "A tiny gift charm",
+    "semantic_description": "gift, gifts, present, presents, surprise, surprises, holiday, wedding, anniversary",
+    "category": "people",
+    "asset_url": "/assets/charms/gift.svg",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  }
+]

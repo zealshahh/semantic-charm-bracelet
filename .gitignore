@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.venv/
+
+# Builds and caches
+dist/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.vite/
+*.tsbuildinfo
+
+# Secrets — keep example configuration
+.env
+.env.*
+!.env.example
+
+# Local files
+.DS_Store
+*.log
