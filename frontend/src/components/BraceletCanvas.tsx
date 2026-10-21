@@ -146,7 +146,7 @@ export default function BraceletCanvas({ charms, braceletId }: { charms: Charm[]
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
         ctx.clearRect(0, 0, w, h)
         ctx.lineCap = ctx.lineJoin = 'round'
-        drawGoldChain(ctx, chain.links)
+        drawGoldChain(ctx, chain.links, dpr)
         if (drag && destination) {
           ctx.beginPath()
           ctx.arc(destination.position.x, destination.position.y, 10, 0, Math.PI * 2)
