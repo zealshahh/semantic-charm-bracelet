@@ -2,76 +2,62 @@ import { useEffect, useRef, useState } from 'react'
 import Matter from 'matter-js'
 import type { Charm } from '../services/api'
 import { createChain } from '../physics/createChain'
-import { assignCharmSlots } from '../physics/assignCharmSlots'
-import { createCharmItem, stepCharm, startCharmDrag, finishCharmDrag, nearestCharmLink, ringOffset, type CharmItem } from '../physics/attachCharm'
+import { addCharms, type CharmCollection } from '../physics/addCharms'
+import { stepCharm, startCharmDrag, finishCharmDrag, nearestCharmLink, ringOffset, type CharmItem } from '../physics/attachCharm'
 import { drawCharm, loadCharmImage } from './CharmRenderer'
 import { drawGoldChain } from './GoldChainRenderer'
 
-const { Engine, Runner, Events, Composite, Query, Body } = Matter
+const { Engine, Runner, Events, Composite, Query } = Matter
 
 export default function BraceletCanvas({ charms, braceletId }: { charms: Charm[] | null; braceletId?: string }) {
   const wrap = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
   const savedSlots = useRef(new Map<string, number>())
   const previousBracelet = useRef<string | undefined>(undefined)
+  const simulation = useRef<(CharmCollection & { startedAt: number }) | null>(null)
+  const hasCharms = charms !== null
   const [size, setSize] = useState({ w: 0, h: 0 })
 
   // Track container size; a resize rebuilds the bracelet (without replaying the drop).
   useEffect(() => {
     const el = wrap.current!
     let t: number
+    const measure = () => {
+      const w = el.clientWidth, h = el.clientHeight
+      setSize(current => current.w === w && current.h === h ? current : { w, h })
+    }
     const ro = new ResizeObserver(() => {
       clearTimeout(t)
-      t = window.setTimeout(() => setSize({ w: el.clientWidth, h: el.clientHeight }), 200)
+      t = window.setTimeout(measure, 200)
     })
     ro.observe(el)
-    setSize({ w: el.clientWidth, h: el.clientHeight })
+    measure()
     return () => { ro.disconnect(); clearTimeout(t) }
   }, [])
 
   // Build one simulation per bracelet. Cleanup tears down engine, runner, listeners and the draw loop.
   useEffect(() => {
     const cv = canvas.current!
-    if (!charms || !size.w || !size.h) return
+    if (!hasCharms || !size.w || !size.h) return
     const animate = previousBracelet.current !== braceletId
     if (animate) savedSlots.current.clear()
     previousBracelet.current = braceletId
-    let cancelled = false, raf = 0
+    let raf = 0
     let engine: Matter.Engine | null = null
     let runner: Matter.Runner | null = null
     let removeDragListeners = () => {}
 
-    ;(async () => {
-      const imgs = await Promise.all(charms.map((c) => loadCharmImage(c.asset_url)))
-      if (cancelled) return
+    {
       const { w, h } = size
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       cv.width = w * dpr; cv.height = h * dpr
       const eng = (engine = Engine.create({ positionIterations: 10, constraintIterations: 6 }))
       const chain = createChain(eng.world, w, h)
       const charmSize = Math.max(44, Math.min(88, w * 0.095))
-      const slots = assignCharmSlots(charms.length, chain.linkCount)
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      const occupied = new Set(savedSlots.current.values())
-      const items: CharmItem[] = charms.map((c, i) => {
-        const existing = savedSlots.current.get(c.id)
-        let slot = existing ?? slots[i]
-        if (existing === undefined && occupied.has(slot)) {
-          const free = chain.links.map((_, index) => index).slice(3, -3).filter(index => !occupied.has(index))
-          slot = free.reduce((best, index) =>
-            Math.min(...[...occupied].map(taken => Math.abs(index - taken))) >
-            Math.min(...[...occupied].map(taken => Math.abs(best - taken))) ? index : best)
-        }
-        occupied.add(slot)
-        savedSlots.current.set(c.id, slot)
-        const item = createCharmItem(c, imgs[i], chain.links[slot], charmSize, animate ? i : 0, existing === undefined)
-        if (existing !== undefined) {
-          Body.setPosition(item.body, { x: item.link.position.x, y: item.link.position.y + ringOffset(charmSize) })
-          stepCharm(item, 0, eng.world, charmSize, true)
-        }
-        return item
-      })
-      Composite.add(eng.world, items.map((i) => i.body))
+      const items: CharmItem[] = []
+      const t0 = performance.now()
+      simulation.current = { world: eng.world, links: chain.links, items, size: charmSize, initialized: false, startedAt: t0 }
       let drag: { item: CharmItem; pointerId: number } | null = null
       let destination: Matter.Body | null = null
       const point = (event: PointerEvent) => {
@@ -125,7 +111,6 @@ export default function BraceletCanvas({ charms, braceletId }: { charms: Charm[]
         cv.style.cursor = 'default'
       }
 
-      const t0 = performance.now()
       Events.on(eng, 'beforeUpdate', () => {
         if (drag) {
           const body = drag.item.body
@@ -188,16 +173,33 @@ export default function BraceletCanvas({ charms, braceletId }: { charms: Charm[]
         raf = requestAnimationFrame(draw)
       }
       draw()
-    })()
+    }
 
     return () => {
-      cancelled = true
+      simulation.current = null
       cancelAnimationFrame(raf)
       removeDragListeners()
       if (runner) Runner.stop(runner)
       if (engine) { Events.off(engine, 'beforeUpdate'); Composite.clear(engine.world, false); Engine.clear(engine) }
       cv.getContext('2d')?.clearRect(0, 0, cv.width, cv.height)
     }
+  }, [hasCharms, size, braceletId])
+
+  // Loading a new image does not restart the engine, runner or pointer handlers.
+  // Ignore stale image loads after another update, resize or bracelet replacement.
+  useEffect(() => {
+    const current = simulation.current
+    if (!current || !charms) return
+    let cancelled = false
+    const existingIds = new Set(current.items.map(item => item.charm.id))
+    const missing = charms.filter(charm => !existingIds.has(charm.id))
+    if (!missing.length) return
+    Promise.all(missing.map(async charm => [charm.id, await loadCharmImage(charm.asset_url)] as const))
+      .then(entries => {
+        if (cancelled || simulation.current !== current) return
+        addCharms(current, charms, new Map(entries), savedSlots.current, performance.now() - current.startedAt)
+      })
+    return () => { cancelled = true }
   }, [charms, size, braceletId])
 
   return (

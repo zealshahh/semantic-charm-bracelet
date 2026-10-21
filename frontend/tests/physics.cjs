@@ -15,7 +15,7 @@ function loadPhysics(name) {
   require.cache[filename] = mod
   mod.require = (id) => id.startsWith('./') ? loadPhysics(id.slice(2)) : require(id)
   mod._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true },
+    compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
   }).outputText, filename)
   return mod.exports
 }
@@ -24,6 +24,55 @@ const { createChain } = loadPhysics('createChain')
 const { assignCharmSlots } = loadPhysics('assignCharmSlots')
 const { createCharmItem, stepCharm } = loadPhysics('attachCharm')
 const { startCharmDrag, finishCharmDrag, nearestCharmLink } = loadPhysics('attachCharm')
+const { addCharms } = loadPhysics('addCharms')
+
+test('adding a charm preserves existing bodies, momentum, chain constraints and an active grip', () => {
+  const engine = Matter.Engine.create()
+  const chain = createChain(engine.world, 942, 424)
+  const collection = { world: engine.world, links: chain.links, items: [], size: 88, initialized: false }
+  const charm = id => ({ id, physics: { density: .001, friction: .3, restitution: .2 } })
+  const initial = [charm('heart'), charm('book'), charm('cloud')], slots = new Map()
+  assert.equal(addCharms(collection, initial, new Map(), slots, 0), 3)
+  collection.items.forEach(item => stepCharm(item, 5000, engine.world, 88, true))
+  Matter.Body.setVelocity(collection.items[0].body, { x: 2, y: -1 })
+  startCharmDrag(collection.items[1], engine.world)
+  const snapshot = collection.items.map(item => ({ item, body: item.body, link: item.link, grip: item.grip,
+    attachment: item.attachment, position: { ...item.body.position }, velocity: { ...item.body.velocity } }))
+  const constraints = Matter.Composite.allConstraints(engine.world).slice()
+  const desired = [...initial, charm('butterfly')]
+  assert.equal(addCharms(collection, desired, new Map(), slots, 60000), 1)
+  for (const [i, before] of snapshot.entries()) {
+    const item = collection.items[i]
+    assert.equal(item, before.item)
+    assert.equal(item.body, before.body)
+    assert.equal(item.link, before.link)
+    assert.equal(item.grip, before.grip)
+    assert.equal(item.attachment, before.attachment)
+    assert.deepEqual(item.body.position, before.position)
+    assert.deepEqual(item.body.velocity, before.velocity)
+  }
+  assert.deepEqual(Matter.Composite.allConstraints(engine.world), constraints)
+  assert.equal(Matter.Composite.allBodies(engine.world).length, chain.links.length + 4)
+  assert.equal(new Set(collection.items.map(item => item.link)).size, 4)
+  const added = collection.items[3]
+  stepCharm(added, 60100, engine.world, 88, false)
+  assert.equal(added.state, 'wait', 'late additions use the running clock for their drop delay')
+  stepCharm(added, 60200, engine.world, 88, true)
+  assert.equal(added.state, 'on')
+  assert.equal(addCharms(collection, desired, new Map(), slots, 60300), 0, 'repeated updates cannot duplicate bodies')
+})
+
+test('rebuilding after a resize restores saved slots while subsequent additions remain incremental', () => {
+  const engine = Matter.Engine.create(), chain = createChain(engine.world, 340, 424)
+  const collection = { world: engine.world, links: chain.links, items: [], size: 44, initialized: false }
+  const charms = ['heart', 'book'].map(id => ({ id, physics: { density: .001, friction: .3, restitution: .2 } }))
+  const slots = new Map([['heart', 19], ['book', 8]])
+  addCharms(collection, charms, new Map(), slots, 0)
+  assert.equal(collection.items[0].link, chain.links[19])
+  assert.equal(collection.items[1].link, chain.links[8])
+  assert.ok(collection.items.every(item => item.state === 'on'))
+  assert.equal(Matter.Composite.allConstraints(engine.world).length, 28)
+})
 
 test('a held charm follows a physical grip, tilts, and reattaches without teleporting', () => {
   const engine = Matter.Engine.create({ positionIterations: 10, constraintIterations: 6 })
