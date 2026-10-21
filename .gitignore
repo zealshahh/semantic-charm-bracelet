@@ -8,6 +8,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .vite/
+.vercel/
 *.tsbuildinfo
 
 # Secrets — keep example configuration

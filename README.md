@@ -18,6 +18,40 @@ uvicorn app.main:app --port 8000
 
 Open http://localhost:8000
 
+## Deploy on Vercel
+
+Import this repository as one Vercel project with its Root Directory set to the
+repository root. The root `vercel.json` defines two independently built services:
+
+- `backend`: FastAPI in `backend`, entrypoint `app.main:app`, public under `/api/*`.
+- `frontend`: Vite in `frontend`, built with `npm ci` and `npm run build`, serving
+  `dist` for all other public paths, including `/assets/charms/*`.
+
+API routes keep their `/api/v1/...` prefix. Browser requests use relative URLs
+on the deployment's own domain. There are no runtime service-to-service calls,
+so no bindings or backend URL environment variables are needed. Vite's localhost
+proxy applies only to the separate `npm run dev` development workflow.
+
+The backend reads its catalog and optional embeddings from its own `data/`
+directory. On Vercel, it does not mount the sibling frontend build. The frontend
+service owns the artwork and other static files.
+
+For a combined local preview, install the [Vercel CLI](https://vercel.com/docs/cli)
+and run from the repository root:
+
+```bash
+vercel dev -L
+```
+
+The `-L` flag runs locally without cloud authentication. Set optional Gemini
+settings from `backend/.env.example` in Vercel's project environment variables;
+keep API keys out of frontend `VITE_*` variables. Without a Gemini key, the app
+uses lexical mode. If using Gemini embeddings, generate them before deployment
+and include the resulting files in `backend/data/`.
+
+The current in-memory rate limiter is per Python instance, not a shared limit
+across all Vercel instances. Generated bracelets are not persisted.
+
 ## Develop with hot reload
 
 ```bash

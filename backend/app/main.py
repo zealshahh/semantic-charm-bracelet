@@ -18,8 +18,9 @@ from .errors import ApiError, ProviderError
 from .repository import CharmRepository
 from .schemas import BraceletOut, GenerateRequest
 
-ROOT = Path(__file__).resolve().parents[2]
-DATA = ROOT / "backend" / "data"
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+ROOT = BACKEND_ROOT.parent
+DATA = BACKEND_ROOT / "data"
 ASSETS = ROOT / "frontend" / "public" / "assets" / "charms"
 DIST = ROOT / "frontend" / "dist"
 
@@ -119,5 +120,5 @@ def get_charm(charm_id: str, request: Request):
 
 
 # Production: serve the built frontend from the same server (run `npm run build` first).
-if DIST.exists():
+if not os.getenv("VERCEL") and DIST.exists():
     app.mount("/", StaticFiles(directory=DIST, html=True), name="web")

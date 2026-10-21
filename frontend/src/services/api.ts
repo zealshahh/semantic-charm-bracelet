@@ -24,7 +24,7 @@ export async function generateBracelet(memory: string, charmCount: number, signa
     })
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e
-    throw new Error('Can’t reach the server. Check that the backend is running on port 8000.')
+    throw new Error('can’t reach the server. please try again shortly.')
   }
   const data = await res.json().catch(() => null)
   if (!res.ok || !data?.success) throw new Error(data?.error?.message ?? 'Something went wrong. Try again.')
