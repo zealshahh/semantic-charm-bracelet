@@ -3,6 +3,7 @@ import PromptInput from './components/PromptInput'
 import BraceletCanvas from './components/BraceletCanvas'
 import { generateBracelet, type Bracelet } from './services/api'
 import { goldCharmUrl } from './components/CharmRenderer'
+import CharmPicker from './components/CharmPicker'
 
 export default function App() {
   const [bracelet, setBracelet] = useState<Bracelet | null>(null)
@@ -14,13 +15,13 @@ export default function App() {
   async function onSubmit(memory: string, count: number) {
     abort.current?.abort() // a newer request supersedes any in-flight one
     const ctl = (abort.current = new AbortController())
-    setBusy(true); setIsError(false); setStatus('Finding charms…')
+    setBusy(true); setIsError(false); setStatus('finding charms…')
     try {
       const b = await generateBracelet(memory, count, ctl.signal)
       setBracelet(b)
       setStatus(b.charms.length < count
-        ? `${b.charms.length} charms: that’s all the memory supports. Drag any charm to swing it.`
-        : `${b.charms.length} charms hung. Drag any charm to swing it.`)
+        ? `${b.charms.length} charms. not enough details for more charms :( )`
+        : `${b.charms.length} charms hung. drag charms along the chain to rearrange them.`)
     } catch (e) {
       if ((e as Error).name === 'AbortError') return
       setBracelet(null); setIsError(true); setStatus((e as Error).message)
@@ -31,11 +32,16 @@ export default function App() {
 
   return (
     <main>
-      <h1>Semantic charm bracelet</h1>
+      <h1>semantic charm bracelet</h1>
       <p className="lede">write a memory and create a charm bracelet for it ❤️ </p>
       <PromptInput busy={busy} onSubmit={onSubmit} />
       <p id="status" className={isError ? 'err' : ''} role="status" aria-live="polite">{status}</p>
-      <BraceletCanvas charms={bracelet?.charms ?? null} />
+      <BraceletCanvas charms={bracelet?.charms ?? null} braceletId={bracelet?.bracelet_id} />
+      {bracelet && <CharmPicker selected={bracelet.charms} onAdd={charm => {
+        setBracelet(current => current && !current.charms.some(item => item.id === charm.id) && current.charms.length < 10
+          ? { ...current, charms: [...current.charms, charm] } : current)
+        setStatus('a new little keepsake. pick it up and find its spot.')
+      }} />}
       {bracelet && (
         <>
           <h2 className="theme">{bracelet.theme}</h2>

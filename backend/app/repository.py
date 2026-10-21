@@ -10,7 +10,8 @@ class CharmRepository:
             raise ValueError("duplicate charm ids in charms.json")
         if assets_dir and assets_dir.exists():
             for c in self.charms:
-                if not (assets_dir / Path(c["asset_url"]).name).exists():
+                relative_asset = c["asset_url"].removeprefix("/assets/charms/")
+                if not (assets_dir / relative_asset).exists():
                     raise ValueError(f"missing asset for {c['id']}: {c['asset_url']}")
         self.by_id = {c["id"]: c for c in self.charms}
 

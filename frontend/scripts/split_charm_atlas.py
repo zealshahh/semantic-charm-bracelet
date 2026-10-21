@@ -59,18 +59,36 @@ def write_png(path, w, h, rows):
 
 if __name__ == '__main__':
     width, height, rows = read_png(sys.argv[1])
-    cw, ch = width // 6, height // 4
-    assert width % 6 == height % 4 == 0
+    extra = '--extra' in sys.argv
+    columns, row_count = (4, 3) if extra else (6, 4)
+    names = 'butterfly strawberry shell cherry key bow tennis palette icecream boot clover planet'.split() if extra else NAMES
+    cw, ch = width // columns, height // row_count
+    assert width % columns == height % row_count == 0
     # The last row's tall jump rings begin slightly above its nominal grid
     # boundary. Crop on the transparent gutters to keep neighboring artwork out.
-    gutters = [0, ch, ch * 2, round(height * 0.7324), height]
+    gutters = [i * ch for i in range(row_count + 1)] if extra else [0, ch, ch * 2, round(height * 0.7324), height]
     out = Path(__file__).resolve().parents[1] / 'public/assets/charms/gold'
     out.mkdir(parents=True, exist_ok=True)
-    for i, name in enumerate(NAMES):
-        col, row = i % 6, i // 6
+    for i, name in enumerate(names):
+        col, row = i % columns, i // columns
         start, end = gutters[row], min(gutters[row + 1], gutters[row] + ch)
         pixels = [bytearray(r[col * cw * 4:(col + 1) * cw * 4]) for r in rows[start:end]]
         pixels.extend(bytearray(cw * 4) for _ in range(ch - len(pixels)))
+        if extra:
+            # Align the photographed jump ring to the renderer's attachment
+            # point by translating the crop, without changing any artwork.
+            ring = [(x, y) for y in range(round(ch * .21)) for x in range(cw)
+                    if pixels[y][x * 4 + 3] > 160]
+            assert ring, f'Missing jump ring: {name}'
+            dx = round(cw / 2 - sum(x for x, _ in ring) / len(ring))
+            dy = round(ch * .09375 - sum(y for _, y in ring) / len(ring))
+            shifted = [bytearray(cw * 4) for _ in range(ch)]
+            for y in range(ch):
+                if not 0 <= y + dy < ch:
+                    continue
+                lo, hi = max(0, -dx), min(cw, cw - dx)
+                shifted[y + dy][(lo + dx) * 4:(hi + dx) * 4] = pixels[y][lo * 4:hi * 4]
+            pixels = shifted
         assert any(pixels[y][x * 4 + 3] == 0 for y in range(ch) for x in range(cw)), 'Atlas needs transparent alpha'
         write_png(out / f'{name}.png', cw, ch, pixels)
-    print(f'Extracted {len(NAMES)} charms to {out}')
+    print(f'Extracted {len(names)} charms to {out}')

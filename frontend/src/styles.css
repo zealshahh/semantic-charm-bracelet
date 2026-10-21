@@ -28,3 +28,17 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 #legend img{width:52px;height:52px;object-fit:contain;flex:none;filter:drop-shadow(0 3px 2px #64431b26)}
 #legend b{display:block;font-weight:700;font-size:21px}
 #legend span{color:var(--muted);font-size:18px}
+
+.drag-hint{position:absolute;bottom:12px;left:16px;right:16px;margin:0;text-align:center;font-size:18px;color:#806a46;pointer-events:none}
+.charm-picker{margin:24px 0;border-top:1px solid var(--line);padding-top:16px}
+.charm-picker summary{cursor:pointer;font:500 20px/1.4 'DynaPuff',cursive;color:var(--accent)}
+.charm-picker p{margin:12px 0;color:var(--muted)}
+.charm-picker input{font:inherit;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--text);width:min(100%,360px);margin-bottom:16px}
+.charm-tray{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:10px;max-height:420px;overflow:auto;padding:4px}
+.charm-tray button{display:grid;justify-items:center;gap:3px;border:1px solid var(--line);border-radius:12px;padding:10px 5px;background:var(--field);color:var(--text);transition:transform .15s,background .15s}
+.charm-tray button:hover:not(:disabled){transform:translateY(-3px) rotate(-2deg);background:#fff5dc}
+.charm-tray button:disabled{opacity:.45;cursor:default}
+.charm-tray img{width:66px;height:66px;object-fit:contain;filter:drop-shadow(0 4px 3px #76541d25)}
+.charm-tray span{font-size:19px;line-height:1.15}
+.charm-tray small{font-size:16px;color:var(--accent)}
+@media(prefers-reduced-motion:reduce){.charm-tray button{transition:none}.charm-tray button:hover:not(:disabled){transform:none}}

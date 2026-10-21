@@ -23,11 +23,11 @@ export function loadCharmImage(url: string): Promise<HTMLImageElement | null> {
   return p
 }
 
-export function drawCharm(ctx: CanvasRenderingContext2D, img: HTMLImageElement | null, size: number) {
+export function drawCharm(ctx: CanvasRenderingContext2D, img: HTMLImageElement | null, size: number, lifted = false) {
   ctx.shadowColor = 'rgba(77,49,18,.27)'
-  ctx.shadowBlur = 5
+  ctx.shadowBlur = lifted ? 16 : 5
   ctx.shadowOffsetX = 1
-  ctx.shadowOffsetY = 5
+  ctx.shadowOffsetY = lifted ? 16 : 5
   if (img) {
     ctx.drawImage(img, -size / 2, -size / 2, size, size)
   } else {

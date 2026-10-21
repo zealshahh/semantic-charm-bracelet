@@ -310,5 +310,161 @@
       "friction": 0.3,
       "restitution": 0.2
     }
+  },
+  {
+    "id": "butterfly",
+    "name": "Butterfly",
+    "description": "A lavender enamel butterfly with gold wings",
+    "semantic_description": "butterfly butterflies transformation flutter wings lavender insect insects rebirth change",
+    "category": "nature",
+    "asset_url": "/assets/charms/gold/butterfly.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "strawberry",
+    "name": "Strawberry",
+    "description": "A ruby enamel strawberry with gold seeds",
+    "semantic_description": "strawberry strawberries berry berries fruit fruity picking strawberry picking jam smoothie",
+    "category": "food",
+    "asset_url": "/assets/charms/gold/strawberry.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "shell",
+    "name": "Pearl seashell",
+    "description": "A sculptural gold seashell holding a pearl",
+    "semantic_description": "seashell seashells shell shells pearl pearls seaside tide tidepool collecting shells beachcombing",
+    "category": "nature",
+    "asset_url": "/assets/charms/gold/shell.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "cherry",
+    "name": "Cherries",
+    "description": "A pair of glossy red enamel cherries",
+    "semantic_description": "cherry cherries orchard cherry blossom tart fruit picnic soda",
+    "category": "food",
+    "asset_url": "/assets/charms/gold/cherry.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "key",
+    "name": "Secret key",
+    "description": "An ornate little gold key with a crystal",
+    "semantic_description": "key keys unlock unlocked secret secrets door doors moving new beginning keepsake",
+    "category": "objects",
+    "asset_url": "/assets/charms/gold/key.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "bow",
+    "name": "Ribbon bow",
+    "description": "A sculptural polished gold ribbon bow",
+    "semantic_description": "bow bows ribbon ribbons dress dresses fashion outfit shopping ballet pretty accessory",
+    "category": "objects",
+    "asset_url": "/assets/charms/gold/bow.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "tennis",
+    "name": "Tennis racket",
+    "description": "A miniature gold tennis racket",
+    "semantic_description": "tennis racket racquet court courts match tournament sports sport practice playing tennis",
+    "category": "objects",
+    "asset_url": "/assets/charms/gold/tennis.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "palette",
+    "name": "Paint palette",
+    "description": "A gold palette with colorful enamel paint",
+    "semantic_description": "art artist artists paint painting paints palette drawing draw sketch sketching studio museum creative creativity",
+    "category": "objects",
+    "asset_url": "/assets/charms/gold/palette.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "icecream",
+    "name": "Ice cream",
+    "description": "An enamel strawberry ice cream in a gold cone",
+    "semantic_description": "icecream ice cream gelato frozen yogurt scoop scoops sundae cone cones sprinkles treat treats",
+    "category": "food",
+    "asset_url": "/assets/charms/gold/icecream.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "boot",
+    "name": "Cowboy boot",
+    "description": "An engraved gold cowboy boot",
+    "semantic_description": "cowboy cowgirl boot boots country rodeo western nashville texas line dancing ranch festival",
+    "category": "objects",
+    "asset_url": "/assets/charms/gold/boot.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "clover",
+    "name": "Lucky clover",
+    "description": "A four leaf clover in deep green enamel",
+    "semantic_description": "clover shamrock luck lucky lucky charm fortune ireland irish four leaf good luck",
+    "category": "nature",
+    "asset_url": "/assets/charms/gold/clover.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
+  },
+  {
+    "id": "planet",
+    "name": "Little Saturn",
+    "description": "A violet enamel planet with gold rings",
+    "semantic_description": "planet planets saturn space astronomy telescope universe cosmos cosmic solar system science observatory",
+    "category": "nature",
+    "asset_url": "/assets/charms/gold/planet.png",
+    "physics": {
+      "density": 0.001,
+      "friction": 0.3,
+      "restitution": 0.2
+    }
   }
 ]

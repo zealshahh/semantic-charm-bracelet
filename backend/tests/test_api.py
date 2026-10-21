@@ -28,9 +28,18 @@ def test_validation_and_no_match():
 
 def test_charm_endpoints():
     with TestClient(app) as c:
-        assert len(c.get("/api/v1/charms").json()["charms"]) >= 20
+        catalog = c.get("/api/v1/charms").json()["charms"]
+        assert len(catalog) >= 36
+        assert {"butterfly", "strawberry", "cherry", "shell", "key", "bow", "tennis", "palette", "icecream", "boot", "clover", "planet"} <= {item["id"] for item in catalog}
         assert c.get("/api/v1/charms/book").status_code == 200
         assert c.get("/api/v1/charms/nope").status_code == 404
+
+
+def test_new_charms_match_memories():
+    with TestClient(app) as c:
+        r = c.post("/api/v1/bracelets/generate", json={"memory": "Playing tennis then painting in the studio with butterflies outside", "charm_count": 5})
+        assert r.status_code == 200
+        assert {"tennis", "palette", "butterfly"} <= {item["id"] for item in r.json()["charms"]}
 
 
 def test_cosine_ranking():
